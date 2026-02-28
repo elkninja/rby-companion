@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { MoveModal } from './MoveModal';
 
 interface MoveDetails {
     name: string;
     level: number;
     type?: string;
     category?: 'Physical' | 'Special' | 'Status';
+    url?: string;
 }
 
 interface PokemonMovesProps {
@@ -15,6 +17,7 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
     const [moves, setMoves] = useState<MoveDetails[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedMove, setSelectedMove] = useState<{ url: string; name: string } | null>(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -65,7 +68,8 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                             name: m.name,
                             level: m.level,
                             type: typeName,
-                            category: category
+                            category: category,
+                            url: m.url
                         };
                     })
                 );
@@ -128,7 +132,17 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                     </thead>
                     <tbody>
                         {moves.map((move, index) => (
-                            <tr key={`${move.name}-${index}`} style={{ backgroundColor: index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent' }}>
+                            <tr
+                                key={`${move.name}-${index}`}
+                                onClick={() => move.url && setSelectedMove({ url: move.url, name: move.name })}
+                                style={{
+                                    backgroundColor: index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.1s'
+                                }}
+                                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--gba-highlight)'}
+                                onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent'}
+                            >
                                 <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
                                     {move.level === 1 ? '--' : move.level}
                                 </td>
@@ -146,6 +160,13 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                     </tbody>
                 </table>
             </div>
+
+            <MoveModal
+                moveUrl={selectedMove?.url || ''}
+                moveName={selectedMove?.name || ''}
+                isOpen={!!selectedMove}
+                onClose={() => setSelectedMove(null)}
+            />
         </div>
     );
 }
