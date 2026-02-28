@@ -10,6 +10,29 @@ interface EvolutionStage {
     name: string;
     id: number;
     url: string;
+    trigger?: string; // e.g. "Lv. 16", "Thunder Stone", "Trade"
+}
+
+function getEvolutionTriggerLabel(details: any): string {
+    if (!details || details.length === 0) return '';
+    const d = details[0]; // Take the first evolution detail
+    const trigger = d.trigger?.name;
+
+    if (trigger === 'level-up') {
+        if (d.min_level) return `Lv. ${d.min_level}`;
+        if (d.min_happiness) return 'Friendship';
+        return 'Level Up';
+    }
+    if (trigger === 'use-item' && d.item) {
+        return d.item.name.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+    }
+    if (trigger === 'trade') {
+        if (d.held_item) {
+            return `Trade (${d.held_item.name.replace(/-/g, ' ')})`;
+        }
+        return 'Trade';
+    }
+    return '';
 }
 
 export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
@@ -35,7 +58,7 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                 let currentStage = evoData.chain;
 
                 do {
-                    // Extract ID from species URL (e.g., "https://pokeapi.co/api/v2/pokemon-species/1/")
+                    // Extract ID from species URL
                     const urlParts = currentStage.species.url.split('/');
                     const id = parseInt(urlParts[urlParts.length - 2], 10);
 
@@ -44,15 +67,15 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                         parsedStages.push({
                             name: currentStage.species.name,
                             id: id,
-                            url: currentStage.species.url
+                            url: currentStage.species.url,
+                            trigger: getEvolutionTriggerLabel(currentStage.evolution_details)
                         });
                     }
 
-                    currentStage = currentStage.evolves_to[0]; // Assuming linear evolution for Gen 1 for simplicity (Eevee handled, but we just take first branch if linear else we'd need more logic)
+                    currentStage = currentStage.evolves_to[0];
                 } while (currentStage && currentStage.evolves_to);
 
-                // For Eevee and branched evolutions in Gen 1 like Vileplume/Bellossom(Gen2)
-                // Let's make sure we catch multiple branches if they exist inside `evolves_to`
+                // For Eevee and branched evolutions in Gen 1
                 if (evoData.chain.evolves_to.length > 1) {
                     const extraBranches: EvolutionStage[] = [];
                     evoData.chain.evolves_to.forEach((branch: any) => {
@@ -62,11 +85,11 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                             extraBranches.push({
                                 name: branch.species.name,
                                 id: id,
-                                url: branch.species.url
+                                url: branch.species.url,
+                                trigger: getEvolutionTriggerLabel(branch.evolution_details)
                             });
                         }
                     });
-                    // Push any extra branches (like Vaporeon, Jolteon, Flareon)
                     extraBranches.forEach(b => parsedStages.push(b));
                 }
 
@@ -97,15 +120,19 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
             <div className="gba-panel-header" style={{ marginBottom: '1rem', backgroundColor: 'var(--gba-neutral)' }}>
                 Evolution Line
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                 {stages.map((stage, index) => {
                     const isSelected = stage.id === pokemon.id;
+                    const isBase = index === 0 || (stages.length > 3 && index === 0); // Base form has no trigger
+                    const showArrow = index < stages.length - 1
+                        && stages[index + 1].id !== stages[0].id
+                        && !stages[index].name.includes('eevee');
+
                     return (
                         <div key={stage.id} style={{ display: 'flex', alignItems: 'center' }}>
                             <div
                                 onClick={() => {
                                     if (!isSelected) {
-                                        // Find exactly the pokemon from the local list
                                         const localPokemon = pokemonData.find(p => p.id === stage.id);
                                         if (localPokemon) {
                                             onSelect(localPokemon);
@@ -114,7 +141,7 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                                 }}
                                 style={{
                                     cursor: isSelected ? 'default' : 'pointer',
-                                    padding: '0.25rem', // Reduced padding since border is thicker 
+                                    padding: '0.25rem',
                                     border: isSelected ? '4px solid var(--gba-primary)' : '4px dashed var(--gba-border-light)',
                                     borderRadius: '8px',
                                     backgroundColor: isSelected ? 'var(--gba-panel-bg)' : 'var(--gba-bg-light)',
@@ -122,8 +149,8 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                                     opacity: isSelected ? 1 : 0.7,
                                     transition: 'all 0.1s',
                                     boxSizing: 'border-box',
-                                    width: '104px', // Fixed width to prevent shifting
-                                    height: '92px' // Fixed height to prevent shifting
+                                    width: '104px',
+                                    minHeight: '92px'
                                 }}
                                 onMouseOver={(e) => {
                                     if (!isSelected) {
@@ -144,9 +171,20 @@ export function EvolutionLine({ pokemon, onSelect }: EvolutionLineProps) {
                                     style={{ imageRendering: 'pixelated', width: '56px', height: '56px', margin: '0 auto' }}
                                 />
                                 <div style={{ fontSize: '0.6rem', textTransform: 'capitalize' }}>{stage.name}</div>
+                                {!isBase && stage.trigger && (
+                                    <div style={{
+                                        fontSize: '0.45rem',
+                                        color: 'var(--gba-primary)',
+                                        fontWeight: 'bold',
+                                        marginTop: '0.15rem',
+                                        lineHeight: 1.2
+                                    }}>
+                                        {stage.trigger}
+                                    </div>
+                                )}
                             </div>
-                            {index < stages.length - 1 && stages[index + 1].id !== stages[0].id && !stages[index].name.includes('eevee') && ( // simple check to not put arrows between eevees
-                                <div style={{ margin: '0 0.5rem', color: 'var(--gba-border-light)' }}>▶</div>
+                            {showArrow && (
+                                <div style={{ margin: '0 0.3rem', color: 'var(--gba-border-light)' }}>▶</div>
                             )}
                         </div>
                     );
