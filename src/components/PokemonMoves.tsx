@@ -116,14 +116,14 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
             <div className="gba-panel-header" style={{ marginBottom: 0 }}>
                 <span>Learned Moves</span>
             </div>
-            <div style={{ maxHeight: '300px', overflow: 'auto', margin: '0 -0.5rem' }}>
+            <div style={{ maxHeight: '300px', margin: '0 -0.5rem' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.65rem', textAlign: 'left' }}>
                     <thead>
                         <tr>
                             <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Level</th>
                             <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Move Name</th>
                             <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Type</th>
-                            <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Cat.</th>
+                            <th className="hide-on-mobile" style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Cat.</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,7 +138,7 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                                 <td style={{ padding: '0.4rem 0.5rem', borderBottom: '1px solid var(--gba-bg-dark)', textTransform: 'capitalize' }}>
                                     {move.type}
                                 </td>
-                                <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
+                                <td className="hide-on-mobile" style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
                                     {move.category === 'Physical' ? '💥 Phys' : (move.category === 'Special' ? '✨ Spec' : '🛡️ Stat')}
                                 </td>
                             </tr>

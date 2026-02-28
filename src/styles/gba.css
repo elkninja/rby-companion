@@ -425,7 +425,9 @@ p {
   bottom: 1.5rem;
   right: 1.5rem;
   width: 380px;
+  max-width: calc(100vw - 3rem);
   height: 500px;
+  max-height: calc(100vh - 3rem);
   display: flex;
   flex-direction: column;
   border: 4px solid var(--gba-border-main);
@@ -1201,6 +1203,10 @@ p {
   .stat-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.5rem;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
   }
 
   .gba-panel-header {
