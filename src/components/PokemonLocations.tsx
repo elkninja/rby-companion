@@ -151,20 +151,20 @@ export function PokemonLocations({ pokemonId, onLocationClick, onLocationsLoaded
         <div className="gba-panel">
             <div className="gba-panel-header blue">Locations</div>
 
-            <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
+            <div style={{ overflow: 'auto', maxHeight: '400px', margin: '0 -0.5rem' }}>
                 {locations.length === 0 ? (
                     <div style={{ padding: '1rem', textAlign: 'center' }}>
                         This Pokémon cannot be found in the wild in FireRed or LeafGreen.
                     </div>
                 ) : (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.7rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.65rem' }}>
                         <thead style={{ position: 'sticky', top: 0, backgroundColor: 'var(--gba-bg-light)', zIndex: 1, boxShadow: '0 2px 0 var(--gba-border-main)' }}>
                             <tr>
-                                <th style={{ padding: '0.5rem', textAlign: 'left' }}>Location</th>
-                                <th style={{ padding: '0.5rem', textAlign: 'center' }}>Game</th>
-                                <th style={{ padding: '0.5rem', textAlign: 'center' }}>Lvl</th>
-                                <th style={{ padding: '0.5rem', textAlign: 'center' }}>Method</th>
-                                <th style={{ padding: '0.5rem', textAlign: 'center' }}>%</th>
+                                <th style={{ padding: '0.4rem 0.2rem', textAlign: 'left' }}>Location</th>
+                                <th style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>Game</th>
+                                <th style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>Lvl</th>
+                                <th style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>Method</th>
+                                <th style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -184,16 +184,16 @@ export function PokemonLocations({ pokemonId, onLocationClick, onLocationsLoaded
                                         e.currentTarget.style.backgroundColor = 'transparent';
                                     }}
                                 >
-                                    <td style={{ padding: '0.5rem' }}>
+                                    <td style={{ padding: '0.4rem 0.2rem' }}>
                                         {onLocationClick && <span style={{ marginRight: '0.3rem', fontSize: '0.5rem' }}>📍</span>}
                                         {loc.locationName}
                                     </td>
-                                    <td style={{ padding: '0.5rem', textAlign: 'center' }}>
+                                    <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>
                                         {loc.version === 'both' ? 'FR/LG' : loc.version === 'firered' ? <span style={{ color: '#d9534f', fontWeight: 'bold' }}>FR</span> : <span style={{ color: '#5cb85c', fontWeight: 'bold' }}>LG</span>}
                                     </td>
-                                    <td style={{ padding: '0.5rem', textAlign: 'center' }}>{loc.minLevel === loc.maxLevel ? loc.minLevel : `${loc.minLevel}-${loc.maxLevel}`}</td>
-                                    <td style={{ padding: '0.5rem', textAlign: 'center', textTransform: 'capitalize' }}>{loc.methods.join(', ')}</td>
-                                    <td style={{ padding: '0.5rem', textAlign: 'center' }}>{loc.maxChance}%</td>
+                                    <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>{loc.minLevel === loc.maxLevel ? loc.minLevel : `${loc.minLevel}-${loc.maxLevel}`}</td>
+                                    <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center', textTransform: 'capitalize' }}>{loc.methods.join(', ')}</td>
+                                    <td style={{ padding: '0.4rem 0.2rem', textAlign: 'center' }}>{loc.maxChance}%</td>
                                 </tr>
                             ))}
                         </tbody>

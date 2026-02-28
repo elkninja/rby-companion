@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* GBA FireRed / LeafGreen Palette */
   --gba-bg-light: #f8f8f8;
@@ -149,7 +155,7 @@ body {
   background-color: var(--gba-panel-bg);
   border: 4px solid var(--gba-border-main);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.5rem;
   box-shadow:
     inset -4px -4px 0px 0px rgba(0, 0, 0, 0.1),
     4px 4px 0px 0px rgba(0, 0, 0, 0.2);
@@ -159,8 +165,8 @@ body {
 .gba-panel-header {
   background-color: var(--gba-primary);
   color: white;
-  margin: -1rem -1rem 1rem -1rem;
-  padding: 0.4rem 0.75rem;
+  margin: -0.5rem -0.5rem 1rem -0.5rem;
+  padding: 0.4rem 0.5rem;
   border-bottom: 4px solid var(--gba-border-main);
   font-size: 0.85rem;
   text-shadow: 2px 2px 0 var(--gba-border-main);
@@ -195,6 +201,7 @@ p {
 .gba-input,
 .gba-select {
   width: 100%;
+  max-width: 100%;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.8rem;
   padding: 0.75rem;
@@ -1154,7 +1161,7 @@ p {
 
   .dashboard-grid,
   .split-layout-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
     padding: 0 0.5rem;
   }
@@ -1191,9 +1198,8 @@ p {
 
 @media (max-width: 480px) {
 
-  .stat-grid,
-  .stat-grid-3 {
-    grid-template-columns: 1fr;
+  .stat-grid {
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.5rem;
   }
 

@@ -145,7 +145,7 @@ function App() {
         <>
           <div className="split-layout-grid">
             {/* Left Column (1/3 Width): Pokemon Card + IV Calculator */}
-            <div className="dashboard-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="dashboard-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', minWidth: 0 }}>
               <PokemonCard
                 selectedPokemon={selectedPokemon}
                 onSpriteClick={() => setIsSpriteModalOpen(true)}
@@ -163,7 +163,7 @@ function App() {
             </div>
 
             {/* Right Column (2/3 Width): Evo Line, Locations & Moves */}
-            <div className="dashboard-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="dashboard-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', minWidth: 0 }}>
               <EvolutionLine pokemon={selectedPokemon} onSelect={setSelectedPokemon} />
               <PokemonLocations
                 pokemonId={selectedPokemon.id}
