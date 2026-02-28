@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/vite.svg" alt="RBY Companion Logo" width="120" height="auto" />
+  <img src="public/vite.png" alt="RBY Companion Logo" width="120" height="auto" />
   <h1>🔴 FireRed & 🟢 LeafGreen Companion</h1>
   <p><em>"Welcome to the world of Pokémon! My name is Oak. People call me the Pokémon Prof!"</em></p>
 </div>
