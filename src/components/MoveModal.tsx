@@ -142,7 +142,7 @@ export function MoveModal({ moveUrl, moveName, isOpen, onClose }: MoveModalProps
         }} onClick={onClose}>
             <div
                 className="gba-panel"
-                style={{ width: '340px', maxWidth: '100%', maxHeight: '90vh', overflowY: 'auto' }}
+                style={{ width: '340px', maxWidth: '100%', maxHeight: '90vh', height: 'auto', overflowY: 'auto' }}
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
