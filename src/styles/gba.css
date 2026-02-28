@@ -269,36 +269,7 @@ p {
   gap: 1rem;
 }
 
-/* Tablet Responsiveness */
-@media (max-width: 1024px) {
-
-  .dashboard-grid,
-  .split-layout-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .stat-grid,
-  .stat-grid-3 {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  h1 {
-    font-size: 1.2rem;
-  }
-
-  .gba-panel-header {
-    font-size: 1rem;
-  }
-
-  body {
-    padding: 0.5rem;
-  }
-}
+/* Media queries moved to the bottom of the file for proper cascading override */
 
 /* Dashboard Layout */
 .dashboard-grid {
@@ -1172,4 +1143,65 @@ p {
 
 .legal-footer a:hover {
   color: #333;
+}
+
+/* =========================================================================
+   Responsive Layout Overrides
+   (Must remain at the bottom of the file to guarantee cascade overrides)
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+
+  .dashboard-grid,
+  .split-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .pokedex-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 0.75rem 1rem;
+  }
+
+  .pokedex-header>div {
+    justify-content: center;
+  }
+
+  .pokedex-header h1 {
+    white-space: normal;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .pokedex-header .header-search {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .pokedex-header .header-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .stat-grid,
+  .stat-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .gba-panel-header {
+    font-size: 1rem;
+  }
+
+  body {
+    padding: 0.25rem;
+  }
 }
