@@ -289,6 +289,11 @@ export function DexterChat({ selectedPokemon }: DexterChatProps) {
                                         Save
                                     </button>
                                 </div>
+                                <div style={{ fontSize: '0.35rem', marginTop: '0.3rem' }}>
+                                    <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color: '#88ddff', textDecoration: 'none' }}>
+                                        Get a Gemini API Key here
+                                    </a>
+                                </div>
                             </div>
 
                             <div className="dexter-settings-group">
@@ -319,6 +324,11 @@ export function DexterChat({ selectedPokemon }: DexterChatProps) {
                                     <button onClick={handleSaveElevenLabsKey} className="dexter-send-btn">
                                         Save
                                     </button>
+                                </div>
+                                <div style={{ fontSize: '0.35rem', marginTop: '0.3rem' }}>
+                                    <a href="https://elevenlabs.io/?gc_id=20489998069" target="_blank" rel="noopener noreferrer" style={{ color: '#88ddff', textDecoration: 'none' }}>
+                                        Get an ElevenLabs API Key here
+                                    </a>
                                 </div>
                                 {elevenLabsKey && (
                                     <>
@@ -401,6 +411,11 @@ export function DexterChat({ selectedPokemon }: DexterChatProps) {
                                         <button onClick={handleSaveKey} className="dexter-send-btn">
                                             ▶
                                         </button>
+                                    </div>
+                                    <div style={{ fontSize: '0.35rem', marginTop: '0.4rem', textAlign: 'center' }}>
+                                        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color: '#88ddff', textDecoration: 'none' }}>
+                                            Get a Gemini API Key here
+                                        </a>
                                     </div>
                                 </div>
                             ) : (

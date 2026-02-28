@@ -42,13 +42,13 @@ export function NatureGuide({ isOpen, onClose }: NatureGuideProps) {
                     <p>Natures affect a Pokémon's stats by increasing one stat by <strong style={{ color: 'var(--gba-good)' }}>10% (↑)</strong> and decreasing another by <strong style={{ color: 'var(--gba-bad)' }}>10% (↓)</strong>.</p>
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
+                <div style={{ overflow: 'auto', margin: '0 -0.5rem' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.7rem', textAlign: 'left' }}>
                         <thead>
                             <tr style={{ backgroundColor: 'var(--gba-primary)', color: 'white' }}>
-                                <th style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)' }}>Nature</th>
-                                <th style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)' }}>Increased Stat (+10%)</th>
-                                <th style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)' }}>Decreased Stat (-10%)</th>
+                                <th style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)' }}>Nature</th>
+                                <th style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)' }}>Increased Stat (+10%)</th>
+                                <th style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)' }}>Decreased Stat (-10%)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,18 +56,18 @@ export function NatureGuide({ isOpen, onClose }: NatureGuideProps) {
                                 const isNeutral = !nature.increased && !nature.decreased;
                                 return (
                                     <tr key={nature.name} style={{ backgroundColor: index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent' }}>
-                                        <td style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)', fontWeight: 'bold' }}>{nature.name}</td>
+                                        <td style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)', fontWeight: 'bold' }}>{nature.name}</td>
 
                                         {isNeutral ? (
-                                            <td colSpan={2} style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)', textAlign: 'center', color: 'var(--gba-border-light)', fontStyle: 'italic' }}>
+                                            <td colSpan={2} style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)', textAlign: 'center', color: 'var(--gba-border-light)', fontStyle: 'italic' }}>
                                                 Neutral (No Stat Changes)
                                             </td>
                                         ) : (
                                             <>
-                                                <td style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)', color: 'var(--gba-good)' }}>
+                                                <td style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)', color: 'var(--gba-good)' }}>
                                                     {nature.increased?.toUpperCase()} ↑
                                                 </td>
-                                                <td style={{ padding: '0.5rem', border: '2px solid var(--gba-border-main)', color: 'var(--gba-bad)' }}>
+                                                <td style={{ padding: '0.4rem 0.2rem', border: '2px solid var(--gba-border-main)', color: 'var(--gba-bad)' }}>
                                                     {nature.decreased?.toUpperCase()} ↓
                                                 </td>
                                             </>
