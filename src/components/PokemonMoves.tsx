@@ -116,7 +116,7 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
             <div className="gba-panel-header" style={{ marginBottom: 0 }}>
                 <span>Learned Moves</span>
             </div>
-            <div style={{ maxHeight: '300px', margin: '0 -0.5rem' }}>
+            <div style={{ maxHeight: '300px', overflowY: 'auto', overflowX: 'hidden', margin: '0 -0.5rem' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.65rem', textAlign: 'left' }}>
                     <thead>
                         <tr>
