@@ -12,6 +12,8 @@ import { PokemonLocations } from './components/PokemonLocations';
 import { MapModal } from './components/MapModal';
 import { DexterChat } from './components/DexterChat';
 import { PokedexEmptyState } from './components/PokedexEmptyState';
+import { PokemonBaseStats } from './components/PokemonBaseStats';
+import { PokemonResistances } from './components/PokemonResistances';
 import { natures, getPossibleIvs } from './utils/ivCalculator';
 import type { Nature } from './utils/ivCalculator';
 
@@ -150,6 +152,9 @@ function App() {
                 selectedPokemon={selectedPokemon}
                 onSpriteClick={() => setIsSpriteModalOpen(true)}
               />
+
+              <PokemonBaseStats base={selectedPokemon.base} />
+              <PokemonResistances types={selectedPokemon.type} />
 
               <div className="gba-panel">
                 <div className="gba-panel-header green">IV Calculator</div>

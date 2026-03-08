@@ -4,6 +4,7 @@ import { MoveModal } from './MoveModal';
 interface MoveDetails {
     name: string;
     level: number;
+    learnMethod: string;
     type?: string;
     category?: 'Physical' | 'Special' | 'Status';
     url?: string;
@@ -18,6 +19,7 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedMove, setSelectedMove] = useState<{ url: string; name: string } | null>(null);
+    const [activeTab, setActiveTab] = useState<'level-up' | 'machine'>('level-up');
 
     useEffect(() => {
         let isMounted = true;
@@ -35,20 +37,26 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                 data.moves.forEach((moveObj: any) => {
                     // Look through version group details for FireRed/LeafGreen ('firered-leafgreen')
                     const frlgDetail = moveObj.version_group_details.find(
-                        (vgd: any) => vgd.version_group.name === 'firered-leafgreen' && vgd.move_learn_method.name === 'level-up'
+                        (vgd: any) => vgd.version_group.name === 'firered-leafgreen' &&
+                            (vgd.move_learn_method.name === 'level-up' || vgd.move_learn_method.name === 'machine')
                     );
 
                     if (frlgDetail) {
                         frlgMoves.push({
                             name: moveObj.move.name.replace('-', ' '),
                             level: frlgDetail.level_learned_at,
+                            learnMethod: frlgDetail.move_learn_method.name,
                             url: moveObj.move.url
                         });
                     }
                 });
 
-                // Sort by level ascending
-                frlgMoves.sort((a, b) => a.level - b.level);
+                // Sort by level ascending, but put TMs at the end
+                frlgMoves.sort((a, b) => {
+                    if (a.learnMethod === 'machine' && b.learnMethod === 'level-up') return 1;
+                    if (a.learnMethod === 'level-up' && b.learnMethod === 'machine') return -1;
+                    return a.level - b.level;
+                });
 
                 // Fetch details for each move to get Type and Damage Class
                 const detailedMoves = await Promise.all(
@@ -67,6 +75,7 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
                         return {
                             name: m.name,
                             level: m.level,
+                            learnMethod: m.learnMethod,
                             type: typeName,
                             category: category,
                             url: m.url
@@ -89,6 +98,9 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
         }
 
         fetchMoves();
+
+        // Reset tab to level-up when pokemon changes
+        setActiveTab('level-up');
 
         return () => {
             isMounted = false;
@@ -115,50 +127,97 @@ export function PokemonMoves({ pokemonId }: PokemonMovesProps) {
         return null;
     }
 
+    const filteredMoves = moves.filter(m => m.learnMethod === activeTab);
+
     return (
         <div className="gba-panel" style={{ marginTop: '1rem' }}>
             <div className="gba-panel-header" style={{ marginBottom: 0 }}>
                 <span>Learned Moves</span>
             </div>
+
+            <div style={{ display: 'flex', borderBottom: '2px solid var(--gba-border-main)', marginBottom: '0.5rem', marginTop: '0.25rem' }}>
+                <button
+                    onClick={() => setActiveTab('level-up')}
+                    style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        backgroundColor: activeTab === 'level-up' ? 'var(--gba-border-main)' : 'transparent',
+                        color: activeTab === 'level-up' ? 'white' : 'var(--gba-text-main)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '0.65rem'
+                    }}
+                >
+                    Level Up
+                </button>
+                <button
+                    onClick={() => setActiveTab('machine')}
+                    style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        backgroundColor: activeTab === 'machine' ? 'var(--gba-border-main)' : 'transparent',
+                        color: activeTab === 'machine' ? 'white' : 'var(--gba-text-main)',
+                        border: 'none',
+                        borderLeft: '2px solid var(--gba-border-main)',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '0.65rem'
+                    }}
+                >
+                    TM / HM
+                </button>
+            </div>
+
             <div style={{ margin: '0 -0.5rem' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.65rem', textAlign: 'left' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Level</th>
-                            <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Move Name</th>
-                            <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Type</th>
-                            <th className="hide-on-mobile" style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Cat.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {moves.map((move, index) => (
-                            <tr
-                                key={`${move.name}-${index}`}
-                                onClick={() => move.url && setSelectedMove({ url: move.url, name: move.name })}
-                                style={{
-                                    backgroundColor: index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent',
-                                    cursor: 'pointer',
-                                    transition: 'background-color 0.1s'
-                                }}
-                                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--gba-highlight)'}
-                                onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent'}
-                            >
-                                <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
-                                    {move.level === 1 ? '--' : move.level}
-                                </td>
-                                <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)', textTransform: 'capitalize' }}>
-                                    {move.name}
-                                </td>
-                                <td style={{ padding: '0.4rem 0.5rem', borderBottom: '1px solid var(--gba-bg-dark)', textTransform: 'capitalize' }}>
-                                    {move.type}
-                                </td>
-                                <td className="hide-on-mobile" style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
-                                    {move.category === 'Physical' ? '💥 Phys' : (move.category === 'Special' ? '✨ Spec' : '🛡️ Stat')}
-                                </td>
+                {filteredMoves.length === 0 ? (
+                    <div style={{ padding: '1rem', textAlign: 'center', fontSize: '0.65rem', color: 'var(--gba-border-light)' }}>
+                        No moves found for this category.
+                    </div>
+                ) : (
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.65rem', textAlign: 'left' }}>
+                        <thead>
+                            <tr>
+                                {activeTab === 'level-up' && (
+                                    <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Level</th>
+                                )}
+                                <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Move Name</th>
+                                <th style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Type</th>
+                                <th className="hide-on-mobile" style={{ padding: '0.5rem 1rem', boxShadow: '0 2px 0 var(--gba-border-main)', position: 'sticky', top: 0, backgroundColor: 'var(--gba-panel-bg)', zIndex: 1 }}>Cat.</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredMoves.map((move, index) => (
+                                <tr
+                                    key={`${move.name}-${index}`}
+                                    onClick={() => move.url && setSelectedMove({ url: move.url, name: move.name })}
+                                    style={{
+                                        backgroundColor: index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.1s'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--gba-highlight)'}
+                                    onMouseLeave={e => e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'var(--gba-bg-light)' : 'transparent'}
+                                >
+                                    {activeTab === 'level-up' && (
+                                        <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
+                                            {move.level === 1 ? '--' : move.level}
+                                        </td>
+                                    )}
+                                    <td style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)', textTransform: 'capitalize' }}>
+                                        {move.name}
+                                    </td>
+                                    <td style={{ padding: '0.4rem 0.5rem', borderBottom: '1px solid var(--gba-bg-dark)', textTransform: 'capitalize' }}>
+                                        {move.type}
+                                    </td>
+                                    <td className="hide-on-mobile" style={{ padding: '0.5rem 1rem', borderBottom: '1px solid var(--gba-bg-dark)' }}>
+                                        {move.category === 'Physical' ? '💥 Phys' : (move.category === 'Special' ? '✨ Spec' : '🛡️ Stat')}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
 
             <MoveModal
